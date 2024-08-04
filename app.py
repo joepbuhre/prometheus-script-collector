@@ -13,6 +13,7 @@ class DecoratedFunctions(NamedTuple):
     func: Callable
     name: str
     labels: Any
+    description: str
 
 decorated_functions: List[DecoratedFunctions] = []
 
@@ -47,7 +48,7 @@ def create_prometheus(value: float, name: str, labels: dict = {}, description = 
 """
 
 # Define the decorator that accepts arguments
-def metric(name, labels = {}):
+def metric(name, labels = {}, description = ""):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -67,7 +68,8 @@ def metric(name, labels = {}):
             DecoratedFunctions(
                 func = decorated_function,
                 name = name,
-                labels=labels
+                labels=labels,
+                description=description
             )
         )
         return decorated_function
@@ -76,7 +78,7 @@ def metric(name, labels = {}):
 
 
 @app.route('/metrics')
-def metrics():
+def get_metrics():
     def generate():
         start_time = datetime.now()
         
@@ -84,7 +86,7 @@ def metrics():
         yield "# See: github.com/joepbuhre/script-collector\n"
         for fo in decorated_functions:
             result = create_prometheus(
-                fo.func(), fo.name, fo.labels
+                fo.func(), fo.name, fo.labels, fo.description
             )
             yield result
             
