@@ -9,7 +9,6 @@ RUN pip install -r requirements_base.txt
 WORKDIR /app
 
 COPY app.py app.py
-COPY app.ini app.ini
 COPY run.sh run.sh
 
 RUN chmod +x run.sh
