@@ -15,5 +15,5 @@ RUN chmod +x run.sh
 
 RUN mkdir metrics
 
-CMD [ "./run.sh"]
+CMD [ "sh", "./run.sh"]
 
